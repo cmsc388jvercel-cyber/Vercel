@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% from 'navMacro.html' import nav %}
+{{ nav(url_for('index'), url_for('index') + '#schedule', url_for('index') + '#office-hours', '#') }}
+
+<section class="flex flex-col gap-6 mt-6 pb-12 text-center">
+  {% from 'leaderboardMacro.html' import leaderboard %}
+  {{ leaderboard() }}
+
+  {% from 'projects/projectMacro.html' import projectComponent %}
+
+  {{ projectComponent(
+    'https://classroom.github.com/a/FUZj7oGr',
+    'p1', 'P1: Python Primer',
+    'https://github.com/CMSC388J-UMD-Fall2025/388jfall2025/blob/master/projects/project01.md',
+    'https://www.gradescope.com/courses/1117091/assignments/6669744',
+    'Sep 4', 'Sep 18',
+    null,
+    'https://388jtextbook.vercel.app/docs/Python/python-primer'
+  )}}
+  {{ projectComponent(
+    'https://classroom.github.com/a/6ZWiSsql',
+    'p2', 'P2: Pokedex',
+    'https://github.com/CMSC388J-UMD-Fall2025/388jfall2025/blob/master/projects/project02.md',
+    'https://www.gradescope.com/courses/1117091/assignments/6669749/',
+    'Sep 22', 'Sep 27',
+    null,
+    'https://388jtextbook.vercel.app/docs/Flask/intro-to-flask'
+  )}}
+  {{ projectComponent(
+    'https://classroom.github.com/a/7ruFIcxo',
+    'p3', 'P3: Movie Database',
+    'https://github.com/CMSC388J-UMD-Fall2025/388jfall2025/blob/master/projects/project03.md',
+    'https://www.gradescope.com/courses/1117091/assignments/6669746/',
+    'Oct 2', 'Oct 9',
+    null,
+    'https://388jtextbook.vercel.app/docs/MongoDB/mongodb-primer',
+  )}}
+  {{ projectComponent(
+    'https://classroom.github.com/a/gOoVgUCZ',
+    'p4', 'P4: Movie Database ++',
+    'https://github.com/CMSC388J-UMD-Fall2025/388jfall2025/blob/master/projects/project04.md',
+    'https://www.gradescope.com/courses/1117091/assignments/6669740/',
+    'Oct 23', 'Nov 6',
+    null,
+    'https://388jtextbook.vercel.app/docs/Flask/user-management',
+  )}}
+  <!-- Tailwind Practice Project  -->
+  <!-- {{ projectComponent('https://classroom.github.com/a/VYRPjVNU', 'p5', 'P5: ✨ Pretti Pokedex 💫',
+  'https://github.com/CMSC388J-UMD-F24/388jfall2024/blob/master/fall2024/projects/project05.md',
+  'https://www.gradescope.com/courses/815028/assignments/4690070',
+  'Oct 21', 'Nov 10',
+  'wait',
+  'https://docs.google.com/presentation/d/1wm1V3PvjS75PuYA5-BqNxPgARcVrYMNn6qnfTeQOFwQ/edit?usp=drive_link'
+  )}} -->
+  <!-- Final Project -->
+  <!-- {{ projectComponent('https://github.com/CMSC388J-UMD-S25/388jspring2025/blob/master/projects/howtosubmit.md', 'fp', 'Final Project: 🚀',
+  null,
+  null,
+  'Apr 4', 'May 2',
+  null,
+  'https://docs.google.com/presentation/d/1EMX-FcojNlsBiswCIDBYYp2ptA2ze5d-cCF-v75aSsI/edit?usp=sharing',
+  )}} -->
+</section>
+
+<div class="w-full text-center pb-12 font-bold">Start early!<br/>🐱</div>
+
+<script>
+  const wip = document.getElementById("wip");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        wip.classList.add("wip");
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+  observer.observe(wip);
+</script>
+
+{% endblock %}

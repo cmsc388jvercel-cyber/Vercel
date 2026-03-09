@@ -1,0 +1,91 @@
+---
+title: Proxies and Caching
+description: I don't have any jokes in my cache, give me a bit...
+---
+
+## Intro to Proxies and Caching
+
+Problem: When retrieving a webpage, there is high load on application servers/databases due to repeated requests.
+
+Proxy server = intermediary router for requests;
+
+A proxy server routes requests to the appropriate server but does not directly answer them. Load balancers (a type of proxy) manage large clusters by distributing simple work across multiple application servers.
+
+Caching speeds up data access by storing frequently or recently accessed items in a small, fast storage, applicable in web browsers, memory, filesystems, and databases.
+
+Adding a front-end cache like Squid allows frequent requests (e.g. https://www.amazon.com) to be handled without accessing the main application, while uncommon requests (https://www.gutenberg.org/) are sent through to MediaWiki and the shared database.
+
+A cache checks for data first (a hit) and only fetches from the main store if necessary (a miss), evicting older, less-used items—often using the Least Recently Used (LRU) policy.
+
+Managed caches let clients access both fast and slow storage directly and implement caching logic (e.g., Redis), 
+
+![Managed Caches](/managed-cache.png)
+
+while transparent caches handle caching internally, making it invisible to clients (e.g., Squid, CDNs).
+
+![Transparent Caches](/transparent-cache.png)
+
+## When can we cache?
+
+Short answer: Websites or pages with many reads and relatively few writes. 
+
+### Long Tail of Reads
+
+Consider the distribution of traffic on Wikipedia:
+
+![Long Tail of Wikipedia](/longtail.png)
+
+- A small fraction of Wikipedia pages are popular and account for most of the traffic.
+- There is a *long tail* of pages that are rarely accessed - most of these won't be in our cache.
+
+In general, websites or pages that have a lot of centralized reads are easy to cache.
+
+### Writes and Expiration
+
+What do we do when cached data changes, and is returned to clients out-of-date? Three solutions:
+
+1. Expire cache entries after a certain **TTL (time to live)**.
+2. When data is edited, send new data or an invalidation message to all caches-a **Coherent Cache**.  
+3. Don't change your data, and instead create new files for new data-**versioned data**.
+
+This helps, but websites or pages that are frequently written to are more difficult to cache.
+
+<details>
+  <summary>Is the President of the United States' Wikipedia page useful to cache?</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Easy to cache because it is popular. Hard to cache because the data changes frequently.</p>
+  </div>
+</details>
+
+---
+
+## HTTP Caching
+
+[HTTP's statelessness](/docs/Architecture/rest-design-practices#statelessness) allows us to respond to repeated requests with the same response. `GET` requests in partciular are cached very easily, unlike `DELETE`, `POST`, or `PUT`, which modify data and generally aren’t cached.
+
+HTTP includes a `Cache-Control` header that allows us to specify how to use HTTP's cache:
+
+- `Cache-Control: max-age=3600` - Control expiration time (TTL).
+- `Cache-Control: only-if-cached` - Only serve request if we have the response cached.
+- `Cache-Control: no-cache` - Serve the request using server and database response.
+
+---
+
+## Review
+
+We introduced **proxies** and **caching**.
+
+- **Proxies** are the intermediaries for handling requests, e.g. caches or load balancers.
+- **Caches** are proxies that store data useful for future requests, before they even reach our servers.
+
+We also discussed how caching can be useful for read-heavy services, and controlling caches in HTTP.
+
+Here is a final overview of the Wikipedia architecture we've been discussing-try to answer the questions given:
+
+![Wikipedia Architecture](/wikipedia.png)
+
+## Credits
+
+<Cards>
+  <Card title="Steve Tarzia's Lecture on Proxies and Caches" href="https://stevetarzia.com/teaching/310/slides/Scalability%20Lecture%2004%20-%20Proxies%20and%20Caches.pdf" />
+</Cards>

@@ -1,0 +1,88 @@
+---
+title: Python Decorators
+description: GPT Wrappers
+---
+
+## Functions as Objects
+
+Recall that Python functions can be treated as variables. For example:
+
+```python
+# inner function
+def func_factory():
+    # outer function
+    def a_func():
+        print('This is a_func here!')
+    
+    return a_func
+
+func = func_factory()
+print(type(func))
+func()
+```
+
+This outputs `<class 'function'>` and `This is a_func here`.
+
+## Python Decorators
+
+Decorators are a design pattern where a function is wrapped within another function. This allows us to extend its behavior without changing the original behavior.
+
+```python
+def my_decorator(func):
+    def wrapper():
+        print("Something before the function runs...")
+        func()
+        print("Something after the function runs...")
+
+    return wrapper
+```
+
+Python provides syntactic sugar to let us wrap functions in this decorator:
+
+```python
+@my_decorator
+def say_hello():
+    print("Hello!")
+
+say_hello()
+```
+
+where `@my_decorator` is shorthand for `say_hello = my_decorator(say_hello)`.
+
+When we run this code, we print:
+```
+Something before the function runs...
+Hello!
+Something after the function runs...
+```
+
+## Real World Example
+
+The following `retry()` function calls a (presumably flaky) function a few times, allowing you to specify the max number of retries and the delay between retries:
+
+```python
+import time
+
+def retry(max_retries=3, delay=1):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    print(f"Attempt {attempt} failed: {e}")
+                    if attempt == max_retries:
+                        raise
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+```
+
+## Why Decorators?
+
+These exist in other languages in some form, but are especially popular in Python because:
+- Python functions can be treated as objects/variables.
+- The `@decorator` syntax is pretty and concise.
+- Python is interpreted and dyanmically typed, so decorators are lightweight.
+
+Pythonic web frameworks (Flask, Django, FastAPI) and the overall Python ecosystem heavily rely on decorators. With that said, let's proceed to Flask!

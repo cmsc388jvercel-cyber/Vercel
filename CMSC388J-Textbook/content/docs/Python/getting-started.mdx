@@ -1,0 +1,55 @@
+---
+title: Getting Started with Python
+description: Python Installation and Setup
+---
+
+## Version
+
+We will be using Python 3.12 to grade projects. You are free to use other versions but not using Python 3.12 could lead to inconsistencies between local and autograder outputs.
+
+## Installation
+
+Follow installation instructions based on your operating system:
+
+- Windows: [python.org/downloads](python.org/downloads)
+- Mac: brew, [pyenv-installer](https://github.com/pyenv/pyenv-installer), or [python.org/downloads](https://python.org/downloads)
+- Linux: your distro's package tools, [pyenv-installer](https://github.com/pyenv/pyenv-installer), or [https://python.org/downloads](python.org/downloads)
+
+Once installed, you should be able to access `python3` and `pip3` from your terminal.
+
+<Callout>Run `python3 --version` to verify your installation was successful.</Callout>
+
+## Development Environment
+
+The instructors use VS Code, and so it is recommended for students to use VS Code. Using the same IDE will make debugging projects more simple. You may also choose to use:
+
+- PyCharm
+- Vim/NeoVim
+- Emacs
+
+...or really any IDE or text editor built for Python or general use.
+
+## Virtual Environments
+
+Different libraries may require conflicting versions of dependencies. To solve this, Python developers use virtual environments to "localize" which versions of Python and other dependencies a project should use. A `requirements.txt` file is usually provided to list all of a project's dependencies. For each project, you should create a virtual environment based on the provided `requirements.txt`.
+
+For this class, we will be creating environments using `venv`, but you are free to use other options. 
+
+Run these commands to setup a virtual environment:
+
+```bash tab="Mac/Linux"
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+```bash tab="Windows"
+py -m venv venv
+venv/Scripts/activate
+pip3 install -r requirements.txt
+```
+
+Run this command to save your virtual environment:
+
+```bash
+pip3 freeze > requirements.txt
+```

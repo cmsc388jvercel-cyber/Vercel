@@ -1,0 +1,83 @@
+---
+title: User Management
+description: Yeah I hate my manager too
+---
+
+
+
+## Concept & Goals
+
+
+### Why is user management important?
+- It allows you to control who can access different parts of your web application, protecting sensitive data and features.
+- Good user management means users can register, log in, and have their permissions enforced securely.
+
+### Project requirements:
+
+- You need to support account creation, login/logout, and permission checks.
+- Data security is critical: passwords must be stored safely, and sessions must be managed to prevent unauthorized access.
+
+
+## Authentication & Session Management
+
+### Session and Authentication Handling:
+- Use Flask-Login to manage user sessions. It tracks whether a user is logged in and provides the current_user proxy to access user info.
+- Protect routes with the ```@login_required``` decorator so only authenticated users can access them. Unauthenticated users are redirected to the login page by default.
+- The user loader function connects session data to your user model, typically by querying MongoDB for the user ID stored in the session.
+- Logging out is handled by ``logout_user()``, which clears the session and redirects the user to a safe page.
+
+
+## Database Integration & User-Data Modeling
+
+
+### Defining User Models:
+- Use Flask-MongoEngine to define your user schema. At minimum, include fields for username (or email), 
+hashed password, and any other info you need (e.g., roles, timestamps).
+
+Example: 
+```python
+class User(db.Document, UserMixin):
+    username = db.StringField(required=True, unique=True)
+    email = db.StringField(required=True, unique=True)
+    password = db.StringField(required=True)  # Store bcrypt hash
+```
+
+### Querying and Updating Users:
+- To find a user by email: User.objects(email=user_email).first()
+- Always check for existing users before registration to avoid duplicates.
+
+### Setting Up Relationships:
+- Use ``ReferenceField`` to link other documents (like posts or comments) to users:
+
+
+```python
+class Post(db.Document):
+    author = db.ReferenceField(User)
+```
+- This lets you easily find all posts by a user or display user info alongside their content.
+
+## Best Practices and Application Structure
+
+### Separation of Models and Forms:
+
+- Keep your data models (MongoEngine classes) and web forms (WTForms) in separate files/modules. This makes your code easier to maintain, test, and debug.
+- For example, put your User model in models.py and your registration/login forms in forms.py.
+Security and Organization:
+
+### Always hash passwords before storing them.
+- Use decorators to protect sensitive routes.
+- Organize your project so that each module has a clear responsibility—this helps you scale and maintain your app as it grows.
+
+<details>
+  <summary>What are the key elements that must come together for secure user management in a Flask web application?</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Secure user management in Flask means combining good authentication practices, session management, robust data modeling, and clean project structure.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Why are individual steps like password hashing and route protection essential in keeping user data safe in a web app?</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Each step—from hashing passwords to protecting routes—plays a role in keeping your users and data safe.</p>
+  </div>
+</details>

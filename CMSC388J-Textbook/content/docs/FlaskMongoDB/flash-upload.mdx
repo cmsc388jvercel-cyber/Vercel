@@ -1,0 +1,100 @@
+---
+title: Flash and Upload
+description: Oh my god Flash is that like a Valorant reference 
+---
+
+## Message Flashing
+
+**Goal**: Show how Flask flashes a message to a user after an event, like submitting a form.
+
+**Structure**:
+- Explain that message flashing provides user feedback (like “Saved!”).
+- Barebones setup: Import``flash``, set a secret key, call ``flash("message")`` in your route, and display messages in the template with a Jinja for-loop.
+
+Example:
+```python
+@app.route('/flash')
+def flash_message():
+    flash('This is a flashed message!')
+    return redirect(url_for('index'))
+```
+
+## Uploading Files with Flask-WTF
+
+Goal: Let users upload a file safely, with form validation.
+Structure:
+* Introduce Flask-WTF with a file upload form using ``FileField`` and basic file checking.
+* Simple form: validate and save the file in a fixed folder.
+
+```python
+app.config['UPLOAD_FOLDER'] = 'uploads'
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    if form.validate_on_submit():
+        file = form.file.data
+        filename = secure_filename(file.filename)
+        upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(upload_path)
+    return render_template('upload.html', form=form)
+```
+
+## Saving Images with MongoDB
+
+Goal: Save the uploaded image as part of a MongoDB document.
+Structure:
+* Use MongoEngine with an ImageField in a user profile.
+* Simplify by just showing how an image from the upload gets saved to a user’s document.
+Example:
+
+```python
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if form.validate_on_submit():
+        file = form.file.data
+        filename = secure_filename(file.filename)
+        upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(upload_path)
+        # Save file info and upload to MongoDB using Flask-PyMongo
+        if request.method == "POST":
+            img = request.files['file']
+        if img:
+            # Insert image as binary data into collection
+            mongo.db.images.insert_one({
+                "filename": img.filename,
+                "data": img.read(),
+                "content_type": img.content_type
+            })
+            flash("Image uploaded to MongoDB!")
+            return redirect(url_for("index"))
+        else:
+            flash("No file selected.")
+    return render_template('upload.html', form=form)      
+```
+```html
+<!doctype html>
+<title>Upload</title>
+<form method="post" enctype="multipart/form-data">
+  {{ form.csrf_token }}
+  {{ form.file.label }} {{ form.file() }}
+  <input type="submit" value="Upload">
+</form>
+```
+
+## Custom Error Pages
+Goal: Show how to display a friendly error page instead of default errors.
+Structure:
+* Explain adding an error handler for common errors (like 404).
+* Minimal handler: on any 404, render a simple HTML template.
+Example:
+```python
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404
+```
+```html
+<!doctype html>
+<title>Not Found</title>
+<h1>Page not found</h1>
+<p>Sorry, that page does not exist!</p>
+```

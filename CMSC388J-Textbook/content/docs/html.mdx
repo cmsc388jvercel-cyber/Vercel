@@ -1,0 +1,144 @@
+---
+title: 🌐 HTML
+description: You already know this
+---
+
+## Basic Structure
+
+### Skeleton
+
+Every raw HTML file should have this basic skeleton:
+
+```html
+<html lang="en">
+  <head>
+    <!-- Info about the page goes here -->
+  </head>
+  <body>
+    <!-- Content that shows up on the page goes here -->
+  </body>
+</html>
+```
+
+In the future, we'll use Jinja templates that allows us to create this basic skeleton once and reuse it, rather than recreating it for every page. Modern Frameworks like React will also set this up for you.
+- `<html></html>` wraps the entire page.
+- `<head></head>` wraps the page's metadata.
+- `<body></body>` wraps the page's content.
+
+### Head
+
+A typical head section may look like this:
+
+```html
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Poke-Info</title>
+  <link rel="stylesheet" href="custom.css" />
+</head>
+```
+
+## Writing text
+
+### Headings
+
+```html
+<h1>Main Page Title</h1>
+<h2>Subsection Title</h2>
+<h3>Smaller Subsection</h3>
+<h4>Even smaller...</h4>
+<h5>Insanely small</h5>
+<h6>I can't believe there's this many</h6>
+```
+
+### Paragraphs
+
+```html
+<p>This is a paragraph of text about Pokémon.</p>
+```
+
+Note that this automatically adds spacing before/after text.
+
+### Formatting
+
+```html
+<p>This is <b>bold text</b>.</p>
+<p>This is <strong>important text</strong>.</p>
+<p>This is <i>italic text</i>.</p>
+<p>This is <em>emphasized text</em>.</p>    
+```
+
+### Line Breaks
+
+```html
+Line one<br>
+Line two
+```
+
+### Comments
+
+```html
+<!-- if you're reading this, you're the goat -->
+```
+
+## Lists
+
+```html
+<ol>
+  <li>Bulbasaur</li>
+  <li>Charmander</li>
+  <li>Squirtle</li>
+</ol>
+```
+
+`<ol>` stands for ordered list. You can also use `<ul>` for unordered list. 
+
+## Links
+
+`<a>` creates a link, and href specifies where the link goes:
+
+```html
+<a href="/pokemon/bulbasaur">Bulbasaur</a>
+```
+
+<details>
+  <summary>Exercise: how would you create a link to your app's "Home" page?</summary>
+  <p>`<a href="/">Home</a>`</p>
+</details>
+
+## Images
+
+```html
+<img src="image.png" height="500px" width="400px" />
+```
+
+We must specify `src`. `height` and `width` are almost always used but not necessarily required. In Flask, we create a `static` folder to place all images. In this case, this would point to `static/image.png`.
+
+## Tables
+
+We instantiate a table with `<table>` and create rows within using `<tr>`. Then, we can place our content within using `<td>` (table data): 
+
+```html
+<table>
+  <tr>
+    <td><b>Name</b></td>
+    <td>Bulbasaur</td>
+  </tr>
+</table>
+```
+
+## Favicons
+
+The little icons you see on your browser tab.
+
+```html
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<!-- or with a different file type --> 
+<link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png">
+```
+
+## Conclusion
+
+These are the bare necessities of HTML, as required for Project 1 and onwards. HTML is usually paired with CSS, but since the latter is purely a "frontend" concern, we will not be going over it. Projects 2-4 will come with CSS already created for you, although you will need it for your Final Project. We recommend w3schools as a resource for this.

@@ -1,0 +1,459 @@
+---
+title: Python Primer
+description: Everything you already know but in Python
+---
+
+Python is a dynamically-typed, interpreted, object-oriented programming (OOP) language. It's known for being powerful but syntactically similar to pseudocode.
+
+## Syntax
+
+Python's syntax is much lighter than other common object-oriented programming (OOP) languages. In Java, curly braces are used to create and separate blocks of code. In Python, however, whitespace/indentation is used to create blocks:
+
+```python tab="Python"
+for i in range(10):
+    print(i)
+```
+
+```java tab="Java"
+for (int i=0; i < 10; i++) {
+    System.out.println(i);
+}
+```
+
+This is both a blessing and a curse. This makes Python code quicker to write and more concise, but inconsistent indentation will cause syntax errors. Be mindful of unintended blocks appearing in your code.
+
+<Callout type="warn">Be sure not to mix tabs and spaces as this will confuse the Python interpreter.</Callout>
+
+Also, notice that there are no semicolons required to differentiate lines!
+
+## Typing
+
+Python being "dynamically-typed" means that a variable's type is decided at runtime. That means we can create variables without explicitly telling Python what its type is:
+
+```python tab="Python"
+number = 10
+```
+
+```java tab="Java"
+int number = 10;
+```
+
+Python developers operate on the "duck typing" principle: 
+
+<Callout>If it walks like a duck and it quacks like a duck, then it must be a duck.</Callout>
+
+This means we care about an object having the functions and properties that we require, and not much about its class. As such, Python programs often don't involve type checking.
+
+With that said, let's get into how basic programming is done in Python syntax.
+
+## Comments
+
+One-line comments start with `#`. Python (technically) supports multi-line comments with docstrings (`''' ... '''`).  
+
+```python
+x = 1 # this is a comment
+# this is another comment
+
+'''
+line 1
+line 2
+'''
+```
+
+## Control Flow
+
+### Operators
+
+Boolean operators use their English names, rather than symbols.
+
+```python tab="Python"
+a and b or c and not (d or e)
+```
+
+```java tab="Java"
+a && b || c && !(d || e)
+```
+
+Comparison operators (==, >=, etc.) are the same as in Java and C. 
+
+Interval comparisons can be used:
+
+```python tab="Python"
+if 1 <= number <= 5:
+```
+
+```java tab="Java"
+if (1<= number && number <= 5)
+```
+
+### Loops
+
+The only valid for-loop formats:
+
+```python
+# iterate over values
+for value in lst:
+    # do something
+
+# iterate over indices
+for i in range(len(lst)):
+    # do something
+```
+
+While loops:
+
+```python
+while condition:
+    # do something
+```
+
+### Control Keywords
+
+- `break`: exits a loop  
+- `continue`: skips to the next iteration  
+- `pass`: placeholder where code is required  
+
+```python
+if condition:
+    pass
+else:
+    print("some actual code")
+```
+
+A `for` loop can include an `else`, which runs if the loop exits normally (without `break`).
+
+## Strings and Lists
+
+### String Formatting
+
+String formatting is typically done through an f-string:
+
+```python
+animal = "Blahaj"
+kind = "shark"
+print(f"{animal} is a {kind}")
+# 'Blahaj is a shark'
+
+animal = "Ducks"
+print(f"{animal} can fly. {animal} can also swim.")
+# 'Ducks can fly. Ducks can also swim.'
+```
+
+### List Joining
+
+This syntax is a bit odd-we first state the joining String and then the Strings we want to join:
+
+```python
+', '.join(['x', 'y', 'z']) 
+# "x, y, z"
+```
+
+### List Comprehension 
+
+This doesn't exist in Java! We can process lists in a one-liner in Python:
+
+```python
+squares = [i * i for i in range(5)]
+print(squares)  # [0, 1, 4, 9, 16]
+```
+
+### Slices
+
+Slices work with both lists and strings. 
+
+```python
+l = [1, 2, 3, 4, 5]
+print(l[1:])    # [2,3,4,5]
+print(l[:4])    # [1,2,3,4]
+print(l[1:4])   # [2,3,4]
+print(l[::-1])  # [5,4,3,2,1]
+
+s = "CMSC388J"
+print(s[:4])    # CMSC
+print(s[4:])    # 388J
+print(s[4:7])   # 388
+print(s[:3:-1]) # J883
+```
+
+## Data Structures
+
+### Dictionaries
+
+This is the Python implementation of a hashmap.
+
+```python
+# initialization
+birth_years = {'bach': 1685, 'da vinci': 1452, 'erdos': 1913}
+
+# setting a key and value pair
+birth_years['jobs'] = 1955
+
+# iteration
+for name in birth_years:
+    print(name)
+
+for name, year in birth_years.items():
+    print(name, year)
+
+print('erdos' in birth_years)          # True
+print('scholze' in birth_years)        # False
+print(1685 in birth_years.values())    # True
+print(1729 in birth_years.values())    # False
+```
+
+
+### Tuples
+
+You (probably) saw this in OCaml already. They're not as powerful or common here, but are still useful.
+
+```python
+record = ('Priya', 20, [1, 2, 3])
+print(record[0])
+
+record[0] = 'Amy'  # TypeError, tuples are immutable
+```
+
+Tuple unpacking:
+
+```python
+nums = ((1,2,3), (4,5,6), (7,8,9))
+for a, b, c in nums:
+    print(f'First: {a}, Second: {b}, Third: {c}')
+```
+
+Swapping variables:
+
+```python
+a, b = 8, 4
+a, b = b, a
+print(a, b)  # 4, 8
+```
+
+
+### Sets
+
+Python implementation of a hashset. Supports set operations.
+
+```python
+visited = {4, 2, 1, 3, 5}
+visited.add('cookie')
+visited.remove(2)
+
+print(1 in visited)
+print(6 not in visited)
+
+s1 = {1, 2, 3}
+s2 = {1, 2, 3, 4}
+
+print(s1 <= s2)   # subset check
+print(s1 | s2)   # union
+print(s1 & s2)   # intersection
+```
+
+## Functions
+
+### Definition
+
+```python
+def distance(p1, p2) -> float:
+    x_dist = (p1[0] - p2[0]) ** 2
+    y_dist = (p1[1] - p2[1]) ** 2
+    return (x_dist + y_dist) ** 0.5
+```
+
+### Functions as Objects
+
+```python
+def apply(func):
+    data = [1, 2, 5, 6, 1, 3, 0, 5, 8, 9, 2]
+    return func(data)
+```
+
+Returning multiple values:
+
+```python
+def animals():
+    return 'duck', 'camel'
+
+a = animals()      # ('duck', 'camel')
+d, c = animals()   # d='duck', c='camel'
+```
+
+### Function Arguments
+
+Python supports positional and keyword arguments.
+
+```python
+def print_stuff(x, y, z):
+    print(x, y, z)
+
+print_stuff('a', z='b', y='c')  # prints a c b
+```
+
+Default arguments:
+
+```python
+def print_something(x=0):
+    print(x)
+
+print_something()   # 0
+print_something(1)  # 1
+```
+
+### Lambda Functions
+
+This shouldn't require explanation if you took CMSC330, but don't worry if you haven't.
+
+```python
+a = lambda x, y: x + y
+print(a(1, 2))  # 3
+
+print(list(map(lambda x: x * 2, [1,2,3])))  # [2,4,6]
+```
+
+## Built-in Functions
+
+```python
+s = "darth vader"
+print(type(s))
+print(dir(s))
+
+l = [True, True, True]
+print(len(l))  # 3
+```
+
+Conversions:
+
+```python
+print(str(123))  # "123"
+print(int("456"))  # 456
+```
+
+
+Map and filter:
+
+```python
+def square(x): return x ** 2
+print(list(map(square, range(5))))
+
+def long_string(s): return len(s) >= 8
+print(list(filter(long_string, ['fantastic', 'python', 'acrobatic'])))
+```
+
+Any/All:
+
+```python
+def is_prime(p): ...
+print(all(map(is_prime, range(100))))
+print(any([False, True, False]))
+```
+
+<Callout>See more: https://docs.python.org/3/library/functions.html</Callout>
+
+## Classes
+
+```java tab="Java"
+public class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String greet() {
+        return "Hello, my name is " + name + " and I am " + age + " years old.";
+    }
+
+    public static void main(String[] args) {
+        Person p = new Person("Alice", 20);
+        System.out.println(p.greet());
+    }
+}
+```
+
+```python tab="Python"
+class Person:
+    # constructors always uses '__init__'
+    def __init__(self, name, age): 
+        self.name = name
+        self.age = age
+
+    # 
+    def greet(self): 
+        return f"Hello, my name is {self.name} and I am {self.age} years old."
+
+
+# Create an object
+p = Person("Alice", 20)
+print(p.greet())  # Output: Hello, my name is Alice and I am 20 years old.
+```
+
+## Exceptions
+
+### Raising Exceptions
+
+Since Python is dynamically-typed, we need more runtime error-checking. 
+
+```python
+def process(data):
+    if not all(map(lambda x: x > 0, data)):
+        raise ValueError("All values must be positive.")
+process(["hello", "world"])
+```
+
+### Handling Exceptions
+
+For our purposes, this isn't any different from Java:
+
+```python
+data = [(1,2,3,4,5), {-1,2,30,4,-5}, range(20)]
+
+for datum in data:
+    try:
+        process(datum)
+    except ValueError as e:
+        print(f"Invalid input {datum}: {str(e)}")
+    else:
+        print("Nothing went wrong")
+    finally:
+        print("End of try-except block")
+```
+
+## Imports
+
+Import modules or packages with the import keyword
+```python
+import <package_name> 
+```
+
+Assign your own name with the as keyword
+```python
+import <package_name> as <new_name>
+```
+
+Import specific methods, classes, or packages
+```python
+from <package_name> import <method/class>
+```
+
+Gets rid of dot notation: ```package_name.method()``` becomes ```method()```
+
+Import modules:
+
+```python
+import math
+import math as m
+from math import sqrt
+```
+
+<Callout>Recall: a package requires an `__init__.py` file in its directory.</Callout>
+
+## Final Notes
+
+We tried to give an overview of the Python language, but we definitely didn’t cover all features available. 
+    * Please refer to the standard library docs: https://docs.python.org/3/library/index.html
+    * And to the language reference: https://docs.python.org/3/reference/index.html
+    * We’ll go over more interesting features in coming weeks (generators, context managers, file I/O, enums, RNGs, other tools…)
+

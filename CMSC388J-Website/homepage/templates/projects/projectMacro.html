@@ -1,0 +1,185 @@
+{% macro projectComponent(classroom, id, title, thehub, grade, assigned, due, sample, slide, slide2) %}
+<div id="{{ id }}" class="flex flex-col gap-1">
+  <div id="titleBar" class="bg-gray-100 dark:bg-gray-700 rounded-t-2xl overflow-hidden flex flex-col sm:flex-row justify-between sm:gap-4 rounded-b-md">
+    <a target="_blank" href="{{ classroom }}" class="group project-link sm:ring-4 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-700 sm:!rounded-r-full !flex !flex-col sm:!flex-row !justify-between !gap-4 !p-4 !pl-5 sm:!pr-0">
+      <h2 id="title" class="my-0 flex mr-auto items-center gap-4 relative z-10 underline-offset-8 group-hover:underline-offset-2 decoration-wavy underline decoration-transparent group-hover:decoration-current group-hover:text-blue-500 dark:group-hover:text-blue-300 duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.25)]">
+        <div id="done" class="hidden">
+          {% include "projects/icons/done.html" %}
+        </div>
+        {%if id == "p5" %}
+          <div class="opacity-50 absolute -rotate-45 -top-3 -left-3.5 text-3xl -z-10">🌸</div>
+        {% endif %}
+        {{ title }}
+      </h2>
+      {% include "projects/icons/arrow.html" %}
+    </a>
+    <div class="flex items-center pl-4 sm:pl-1 sm:py-4 pt-0 pb-4">
+      <span id="assigned" class="flex items-center font-light gap-2 bg-gray-400/20 px-3 py-0.5 rounded-full text-gray-500 dark:text-gray-300 mr-4">
+        {% include "projects/icons/lock.html" %}
+        <span class="whitespace-nowrap">{{ assigned }}</span>
+      </span>
+      {%if slide %}
+        <a target="_blank" href="{{ slide }}" class="group relative overflow-hidden no-underline flex duration-300 items-center font-light gap-2 bg-amber-400/20 hover:bg-amber-400/30 px-3 py-0.5 rounded-full text-amber-500 hover:text-amber-600 dark:hover:text-amber-200 dark:text-amber-300 mr-4">
+          <div class="duration-300 group-hover:translate-y-8">
+          {% include "projects/icons/slides.html" %}
+          </div>
+          <div class="absolute -top-6 duration-300 group-hover:translate-y-8 left-3">
+          {% include "projects/icons/slides.html" %}
+          </div>
+          1
+        </a>
+      {% endif %}
+      {%if slide2 %}
+        <a target="_blank" href="{{ slide2 }}" class="group relative overflow-hidden no-underline flex duration-300 items-center font-light gap-2 bg-amber-400/20 hover:bg-amber-400/30 px-3 py-0.5 rounded-full text-amber-500 hover:text-amber-600 dark:hover:text-amber-200 dark:text-amber-300 mr-4">
+          <div class="duration-300 group-hover:translate-y-8">
+          {% include "projects/icons/slides.html" %}
+          </div>
+          <div class="absolute -top-6 duration-300 group-hover:translate-y-8 left-3">
+          {% include "projects/icons/slides.html" %}
+          </div>
+          2
+        </a>
+      {% endif %}
+      <span id="due" class="flex items-center font-light gap-2 bg-blue-500/20 dark:bg-blue-500/30 px-3 py-0.5 sm:rounded-r-none rounded-full text-blue-500 dark:text-blue-300">
+        {% include "projects/icons/due.html" %}
+        <span class="whitespace-nowrap">{{ due }}</span>
+      </span>
+    </div>
+  </div>
+  {% if id != "fp" %}
+    <div class="flex flex-col sm:flex-row gap-1 w-full">
+      <a target="_blank" class="group project-link sm:!rounded-bl-2xl" href="{{ thehub }}">
+        {% include "projects/icons/github.html" %}
+        Readme
+        {% include "projects/icons/arrow.html" %}
+      </a>
+      {% if sample %}
+        {% if sample == "wait" %}
+          <div class="group cursor-wait bg-gray-200 dark:bg-gray-600 project-link">
+            ⚠️
+            <div class="relative max-w-fit">
+              Sample: TBD
+              {% if id == "p5" %}
+                <div id="wip" class="z-30 bg-yellow-500 text-black font-bold rounded-md absolute -bottom-6 -right-8 py-0.5 px-2 text-sm -rotate-12 origin-right whitespace-nowrap">Work in progress</div>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <a target="_blank" class="group project-link" href="{{ sample }}">
+            {% include "projects/icons/link.html" %}
+            Sample
+            {% include "projects/icons/arrow.html" %}
+          </a>
+        {% endif %}
+      {% endif %}
+      <a target="_blank" class="group project-link !rounded-b-2xl sm:!rounded-bl-md sm:!rounded-br-2xl" href="{{ grade }}">
+        {% include "projects/icons/gradescope.html" %}
+        Grades
+        {% include "projects/icons/arrow.html" %}
+      </a>
+    </div>
+  {% else %}
+    <div class="flex flex-col sm:flex-row gap-1 w-full">
+      <a target="_blank" class="group project-link sm:!rounded-bl-2xl" href="https://github.com/CMSC388J-UMD-S25/388jspring2025/blob/master/projects/final.md">
+        {% include "projects/icons/github.html" %}
+        Project Info
+        {% include "projects/icons/arrow.html" %}
+      </a>
+      <a target="_blank" class="group project-link" href="https://www.gradescope.com/courses/967667/assignments/5671394/">
+        {% include "projects/icons/gradescope.html" %}
+        Proposal
+        {% include "projects/icons/arrow.html" %}
+      </a>
+      <a target="_blank" class="group project-link !rounded-b-2xl sm:!rounded-bl-md sm:!rounded-br-2xl" href="https://www.gradescope.com/courses/967667/assignments/5671395/">
+        {% include "projects/icons/gradescope.html" %}
+        Final Submission
+        {% include "projects/icons/arrow.html" %}
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+// to avoid name collision since projectComponent is rendered multiple times on the same page
+if ("{{ id }}") {
+  // FF polyfill for new date from "Mar 1" format
+  let dueVals = "{{ due }}".split(" ");
+  let dueMonth = dueVals[0];
+  let dueDay = dueVals[1];
+
+  let assVals = "{{ assigned }}".split(" ");
+  let assMonth = assVals[0];
+  let assDay = assVals[1];
+
+  let year = new Date().getFullYear();
+  let dueDate = new Date(`${dueMonth} ${dueDay}, ${year}`);
+  let assDate = new Date(`${assMonth} ${assDay}, ${year}`);
+  
+  // assigned past month
+  if (assDate.getMonth() < new Date().getMonth()) {
+    let p = document.querySelector("#{{ id }}");
+    p.querySelector("#assigned").remove()
+  }
+  // assigned same month past date
+  else if (
+    assDate.getMonth() === new Date().getMonth()
+    && assDate.getDate() <= new Date().getDate()
+    ) {
+      let p = document.querySelector("#{{ id }}");
+      p.querySelector("#assigned").remove()
+  } else {
+    let p = document.querySelector("#{{ id }}");
+    p.classList.add("opacity-50");
+    p.classList.add("pointer-events-none");
+  }
+
+  // due past month
+  if (dueDate.getMonth() < new Date().getMonth()) {
+    let p = document.querySelector("#{{ id }}");
+    p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+    p.querySelector("#due").classList.add("text-gray-500", "dark:text-gray-300", "bg-gray-500/20", "dark:bg-gray-500/30");
+    // due in the past
+    p.classList.add("opacity-50");
+    p.querySelector("#done").classList.remove("hidden");
+  }
+  // due same month past date
+  else if (
+    dueDate.getMonth() === new Date().getMonth()
+    && dueDate.getDate() < new Date().getDate()
+    ) {
+      let p = document.querySelector("#{{ id }}");
+      p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+      p.querySelector("#due").classList.add("text-gray-500", "dark:text-gray-300", "bg-gray-500/20", "dark:bg-gray-500/30");
+      // due in the past
+      p.classList.add("opacity-50");
+      p.querySelector("#done").classList.remove("hidden");
+  }
+
+  if (dueDate.getMonth() === new Date().getMonth() || dueDate.getMonth() - new Date().getMonth() === 1) {
+    let today = new Date().getDate();
+    let duedate = dueDate.getDate();
+    if (dueDate.getMonth() - new Date().getMonth() === 1) {
+      duedate+=30;
+    }
+    let p = document.querySelector("#{{ id }}");
+    // green
+    if (duedate - today >= 4 && duedate - today < 7) {
+      p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+      p.querySelector("#due").classList.add("text-emerald-500", "dark:text-emerald-300", "bg-emerald-500/20", "dark:bg-emerald-500/30");
+    // yellow
+    } if (duedate - today == 3) {
+      p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+      p.querySelector("#due").classList.add("text-amber-500", "dark:text-amber-300", "bg-amber-500/20", "dark:bg-amber-500/30");
+    // orange
+    } if (duedate - today == 2) {
+      p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+      p.querySelector("#due").classList.add("text-orange-500", "dark:text-orange-300", "bg-orange-500/20", "dark:bg-orange-500/30");
+    // red
+    } if (duedate - today <= 1 && duedate - today >= 0) {
+      p.querySelector("#due").classList.remove("text-blue-500", "dark:text-blue-300", "bg-blue-500/20", "dark:bg-blue-500/30");
+      p.querySelector("#due").classList.add("text-rose-500", "dark:text-rose-300", "bg-rose-500/20", "dark:bg-rose-500/30");
+    }
+  }
+}
+</script>
+{%- endmacro %}

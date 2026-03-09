@@ -1,0 +1,192 @@
+---
+title: Intro to Flask
+description: Writing our first Flask code!
+---
+
+## What is Flask?
+
+Flask was created by Armin Ronacher. It combines HTML/text rendering and handling web requests by gluing together the libraries of Jinja and Werkzeug.
+
+Flask is referred to as a micro-framework, meaning that using its core functionality to make a web application is relatively simple process as compared to other full-stack frameworks (such as Django). Extended functionalities such as authentication and database management are not in Flask by default but are provided through extensions.
+Think "small core, big ecosystem."
+
+Used by - Pinterest, Twilio, LinkedIn, Obama’s 2012 campaign, Mozilla
+update service, Netflix, Stack Overflow Python community, UK government,
+and more! Wherever you need to quickly create websites/APIs
+
+## Bare Minimum
+
+### Installation
+
+Install Flask with:
+
+```bash
+pip3 install Flask
+```
+
+
+### Setting Environment Variables
+Set the FLASK_APP environment variable:
+
+Mac/Linux
+```bash
+export FLASK_APP=app.py
+```
+Powershell
+```cmd
+$env:FLASK_APP="app.py"
+```
+Command Prompt
+```cmd
+set FLASK_APP=app.py
+```
+
+### Automating Configuration (FLASK_APP, FLASK_ENV)
+Instead of setting variables manually every time:
+
+In your ```.flaskenv``` file, put:
+```ini
+FLASK_APP=app.py
+FLASK_ENV=development
+```
+
+Install:
+```bash
+pip3 install python-dotenv
+```
+
+Flask will automatically load configuration from .flaskenv.
+
+
+Hello World in 8 Lines
+```python
+from flask import Flask
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+```
+
+What does __name__ mean?
+* ``__name__`` is a built-in Python variable.
+* If the file is run directly, ``__name__`` == "__main__".
+* Passing it into Flask(``__name__``) tells Flask where to find resources like templates and static files.
+
+Want to add more pages?
+
+## Routing
+
+### Adding More Pages
+
+Our website just has a singular "Hello World" now. We can create more pages using the same syntax and file:
+
+```python
+@app.route('/')
+@app.route('/index')
+def hello_world():
+    return 'Hello, World!'
+
+@app.route('/about')
+def about():
+    return 'Calling from CMSC388J<br>I\'m learning Flask!'
+```
+
+Here, we apply two decorators to `hello_world` to create two routes that both point to `hello_world`.
+
+### Variable Routing
+
+Useful web applications typically feature many users, posts, etc., far too many to write out manually. We can apply variable routing to handle this:
+
+```python
+@app.route('/')
+def info():
+    return 'Append "user/{username}" to the end of the url to go to <i>username</i>\'s page'
+
+@app.route('/u/<username>')
+def show_profile(username):
+    return f'This is {username}\'s user profile'
+```
+
+Now, we have a countably infinite amount of routes: `/u/lance`, `/u/aryan`, `/u/chuck`, etc.
+
+<Callout> The order of the variables in the decorator and function must match! Flask matches by position rather than by name.</Callout>
+
+## Templating
+
+
+### Returning RAW HTML
+```
+@app.route('/')
+def index():
+    return '''
+        <html>
+          <body>
+            Hello, this is a <b>good</b> example of a <i>bad</i> way to render HTML.
+          </body>
+        </html>
+    '''
+```
+
+Why is this a bad practice?
+* Messy, mixes HTML and Python.
+* Hard to maintain.
+* No clear separation of concerns.
+
+### Using Templates
+* Templates live inside a templates/ folder.
+* Use Jinja2 with render_template():
+
+```python
+from flask import Flask, render_template
+
+@app.route('/')
+def index():
+    return render_template("base.html")
+```
+
+### Dynamic Content with Templates
+
+```python
+posts = [
+    {"user": "Alice", "text": "Learning Flask is fun!", "likes": 12, "location": "NYC"},
+    {"user": "Bob", "text": "Jinja templates are powerful!", "likes": 5, "location": "SF"}
+]
+
+@app.route('/feed')
+def feed():
+    return render_template("posts.html", posts=posts, title="The Feed")
+```
+
+Jinja2 Basics
+* ```{{ }}``` - Expressions (display values, variables, calculations)
+* ```{% %}``` - Statements (loops, conditionals, logic)
+
+
+Example template (posts.html):
+```html
+{% extends "base.html" %}
+
+{% block content %}
+  {% for post in posts %}
+    <h3>{{ post.user }}</h3>
+    <p>{{ post.text }}</p>
+    ❤ <b>{{ post.likes }}</b> · {{ post.location }}
+  {% endfor %}
+{% endblock %}
+```
+
+Dynamic URLs with ```url_for()```:
+```html
+<a href="{{ url_for('profile', username=post.user) }}">{{ post.user }}</a>
+```
+Advantages:
+- Prevents hardcoding URLs.
+- Updates automatically if route changes.
+- Handles dynamic arguments safely
+
+

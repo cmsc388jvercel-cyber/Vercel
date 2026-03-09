@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% from 'navMacro.html' import nav %}
+{{ nav(url_for('index'), url_for('index') + '#schedule', url_for('index') + '#office-hours', url_for('projects')) }}
+
+<div class="relative flex flex-col items-center justify-center gap-2 h-[calc(100lvh_-_32rem)]">
+  <div class="w-44 h-44 blur-2xl rounded-full bg-rose-400/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+  <h1 class="text-7xl sm:text-8xl bg-gradient-to-b from-black/50 dark:from-orange-300 to-rose-500 dark:to-rose-400 text-transparent bg-clip-text my-0">404</h1>
+  <div class="bg-gradient-to-r from-transparent via-rose-400 to-transparent h-1 w-36 sm:w-44 animate-pulse"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,158 @@
+---
+title: MongoDB Primer
+description: I don't know why Mongo and Maria got married, but I guess opposites attract?
+---
+
+## Databases
+
+
+
+Method of storing structured information that is efficient and persistent. Managed by a database management system (DBMS) that supports the following operations (often called CRUD):
+
+- **Create**: adding new data
+- **Read**: retrieving data
+- **Update**: changing data
+- **Delete**: removing data
+
+### SQL Databases
+
+Often called Relational Databases. Data is stored in tables with rows and columns. Preferred for consistency, complex queries, and strong relationships.
+
+Example table (Users):
+
+| id | name   | email              |
+|----|--------|--------------------|
+| 1  | Lance  | lpu@umd.edu        |
+| 2  | Aryan  | bob@email.com      |
+| 3  | Justin | immortal@umd.edu   |
+
+### NoSQL (Document) Databases
+
+Data is stored in JSON-like documents. Preferred for flexibility, evolution, irregular data, horizontal scaling. 
+
+Example document (User):
+
+```json
+{
+  "id": 1,
+  "name": "Alice",
+  "email": "alice@email.com",
+  "preferences": {
+    "theme": "dark",
+    "notifications": true
+  }
+}
+```
+
+### Other Database Types
+
+- **Key–Value Stores** – Data stored as `{key: value}` pairs, great for fast lookups and caching (e.g., Redis)
+- **Column-Family Stores** – Data organized by columns for large-scale analytics and time-series (e.g., BigQuery)
+- **Graph Databases** – Data modeled as nodes and edges, optimized for relationships (e.g., Neo4j)
+- **Vector Databases** – Store and search high-dimensional vectors for ML applications (e.g., Pinecone)
+
+<Cards>
+  <Card title="StackOverflow 2025 Developer Survey" href="https://survey.stackoverflow.co/2025/technology#1-databases" />
+</Cards>
+
+
+## MongoDB Intro
+
+MongoDB is a database management system, just like relational databases (MySQL, PostgreSQL, Oracle). 
+However,  unlike traditional SQL/relational databases (tables, fixed schemas), MongoDB stores data as documents (BSON, similar to JSON), supporting flexible schemas and scalable data storage.
+
+Since we’ll be using it from Python, we can think of the documents as a
+searchable collection of Python dictionaries (index by keys). 
+
+Imagine you want to build a web app that stores daily income and expenses. 
+Or you want to create a website for your student club, allowing you to have posts, events, and images (flexible content types) as
+well as tracking projects, sponsorships, and donations.
+Or you want to build a chat app for classmates or study groups, storing messages, user info, and chat rooms. 
+
+In these cases, you would want to 
+* quickly collect data from forms
+* search records
+* add custom search filters
+* efficiently query large amounts of data for analytics
+
+These are the unique strengths where MongoDB shines. 
+
+### How MongoDB Supports These Use Cases 
+
+#### Submitted Forms 
+When a user submits a form (for example, a sign-up or survey), you can directly insert the data as a document in MongoDB:
+
+``` python
+if form.validate():
+    user = {
+        "name": form.name.data,
+        "location": form.location.data,
+        "age": form.age.data
+    }
+    mongo.db.users.insert_one(user)
+```
+
+--> Key point: MongoDB collections are like lists of dictionaries. You don't
+need to predefine the structure---just insert the data you have.
+
+#### Search Queries
+
+To find a specific user or record, use the find_one or
+find methods:
+
+``` python
+user = mongo.db.users.find_one({"name": username})
+```
+
+Or, to get all users with age above 20:
+
+``` python
+for user in mongo.db.users.find({"age": {"$gt": 20}}):
+    print(user["name"])
+```
+
+--> Key point: MongoDB queries are flexible and can use comparison operators
+like \$gt (greater than).
+
+#### Custom Queries 
+
+You can filter documents using a variety of operators:
+
+``` python
+# Find users whose age is exactly 31
+for user in mongo.db.users.find({"age": 31}):
+    print(user["name"])
+
+# Find users with age greater than 20
+for user in mongo.db.users.find({"age": {"$gt": 20}}):
+    print(user["name"])
+```
+
+Key point: MongoDB supports rich, expressive queries for all sorts of
+data retrieval needs.
+
+#### Creating Indices 
+
+To make searches faster (especially on fields you
+query often), create an index:
+
+``` python
+# Create a unique index on the "name" field
+mongo.db.users.create_index("name", unique=True)
+print(list(mongo.db.users.index_information()))
+```
+
+-->   Key point: Indexes speed up queries and can enforce uniqueness (like for
+emails or usernames).
+
+### Recap: Why MongoDB?
+
+-   Flexible: No need to predefine schemas---great for evolving
+    projects.
+-   Powerful queries: Easily search, filter, and aggregate data.
+-   Scalable: Handles lots of data and users as your project grows.
+-   Fast prototyping: Insert and retrieve data with minimal setup.
+
+### Discussion
+* Which of these features would be most useful in your own project idea?
+

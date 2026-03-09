@@ -1,0 +1,51 @@
+{% macro leaderboard() %}
+
+<h3 class="text-xl text-balance my-0 -mb-3">Thanks for an awesome semester! 🎉</h3>
+<!-- <div>Chuck & Nikita signing off, GL on Finals! 👋 -->
+  <!-- <a target="_blank" href="https://www.courseexp.umd.edu/"
+  class="duration-150 text-red-500 dark:text-red-400 font-medium dark:hover:text-blue-300 hover:text-blue-700">
+    Course Evals
+  </a>! :) -->
+</div>
+
+<div class="flex flex-col gap-2 relative overflow-visible group/main">
+  <div class="hidden md:block absolute top-4 left-40 h-96 -translate-y-full w-4 bg-blue-400 group-hover/main:bg-yellow-100 opacity-50 blur-xl -rotate-[30deg] duration-1000 ease-out group-hover/main:rotate-[30deg] origin-bottom pointer-events-none group-hover/main:scale-x-[3] group-hover/main:scale-y-150 rounded-full"></div>
+  <div class="hidden md:block absolute top-4 right-40 h-96 -translate-y-full w-4 bg-blue-400 group-hover/main:bg-yellow-100 opacity-50 blur-xl rotate-[30deg] duration-1000 ease-out group-hover/main:-rotate-[30deg] origin-bottom pointer-events-none group-hover/main:scale-x-[3] group-hover/main:scale-y-150 rounded-full"></div>
+  <div class="absolute -rotate-12 -top-12 left-0 text-6xl z-10" style="filter: drop-shadow(0 0 2rem #ffcc00)">👑</div>
+  <a target="_blank" href="https://steam-recommendation-engine.vercel.app/" class="rounded-t-3xl rounded-b-md bg-gradient-to-br from-[#ffcc00] to-[#cc9900] text-white p-4 flex items-center justify-between relative group no-underline overflow-hidden">
+    <div class="flex gap-4 items-center truncate max-w-full">
+      <h1 class="m-0 font-serif text-8xl opacity-50 font-black absolute left-6 -top-0 duration-1000 group-hover:-translate-y-3 ease-out text-white">1</h1>
+      <div class="m-0 font-serif text-4xl font-black text-white">1</div>
+      <div class="underline truncate px-12">Steam Recommendation Engine</div>
+    </div>
+  </a>
+  <a target="_blank" href="https://really-good-clash-app.vercel.app/" class="rounded-md bg-gradient-to-br from-gray-300 to-gray-500 text-white p-4 flex items-center justify-between relative group no-underline overflow-hidden">
+    <div class="flex gap-4 items-center truncate max-w-full">
+      <h1 class="m-0 font-serif text-8xl opacity-50 font-black absolute left-6 -top-0 duration-1000 group-hover:-translate-y-3 ease-out text-white">2</h1>
+      <div class="m-0 font-serif text-4xl font-black text-white">2</div>
+      <div class="underline pl-12 pr-6 truncate">Really Good Clash App</div>
+    </div>
+  </a>
+  <a target="_blank" href="https://habit-share-en6uy76gn-james-projects-f2fd363e.vercel.app/" class="rounded-md bg-gradient-to-br from-[#A87143] to-[#7f4a00] text-white p-4 flex items-center justify-between relative group no-underline overflow-hidden">
+    <div class="flex gap-4 items-center truncate max-w-full">
+      <h1 class="m-0 font-serif text-8xl opacity-50 font-black absolute left-6 -top-0 duration-1000 group-hover:-translate-y-3 ease-out text-white">3</h1>
+      <div class="m-0 font-serif text-4xl font-black text-white">3</div>
+      <div class="underline pl-12 pr-12 truncate z-10">Habit Share</div>
+    </div>
+  </a>
+  <a target="_blank" href="https://bookbuddy-8uz8.onrender.com/" class="rounded-md bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200 p-4 flex items-center justify-between relative group no-underline overflow-hidden">
+    <h1 class="m-0 font-serif text-8xl opacity-50 font-black absolute left-6 -top-0 duration-1000 group-hover:-translate-y-3 ease-out">4</h1>
+    <div class="flex z-10 gap-4 items-center truncate max-w-full">
+      <h1 class="m-0 font-serif text-4xl font-black">4</h1>
+      <div class="underline pl-12 pr-6 truncate">BookBuddy</div>
+    </div>
+  </a>
+  <a target="_blank" href="https://restaurant-reviews-psi.vercel.app/home" class="rounded-md bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200 p-4 flex items-center justify-between relative group no-underline overflow-hidden">
+    <h1 class="m-0 font-serif text-8xl opacity-50 font-black absolute left-6 -top-0 duration-1000 group-hover:-translate-y-3 ease-out">5</h1>
+    <div class="flex z-10 gap-4 items-center truncate max-w-full">
+      <h1 class="m-0 font-serif text-4xl font-black">5</h1>
+      <div class="underline pl-12 pr-6 truncate">Restaurants Near You</div>
+    </div>
+  </a>
+</div>
+{% endmacro %}

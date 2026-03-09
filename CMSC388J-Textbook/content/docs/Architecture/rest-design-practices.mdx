@@ -1,0 +1,164 @@
+---
+title: REST API Design Practices
+description: I need to take a rest
+---
+
+
+## HTTP / HTTPS
+
+HTTP is the core protocol allowing computers to exchange information between nodes in a network. 
+It is the thing that enables your computer to access a webpage. APIs use HTTP to carry requests and 
+responses like web browsers do when getting pages.
+
+"I get a page, post an update, delete a photo, put up information."
+
+GET requests fetch information from a website/server. “GET” asks a site to send you a specific resource 
+without changing anything. It includes - getting [a resource] + target machine [link]
+
+POST requests send updated info to a server. Posting [updated info usually in body of form data] + target machine [website link]
+“POST” lets you submit forms or upload new data by sending info in the request body.
+
+
+All REST APIs speak the same basic language, making them easier to use and swap. Resources have unique addresses (URIs), 
+and can be retrieved/manipulated using standard methods. REST enables each item or service in it to have a unique link—simple and direct to access or change.
+
+
+## What is REST and why might you need it?
+
+REST stands for “Representational State Transfer.”. Essentially, it lets clients reference 
+resources; each reply updates the client’s “state” based on new data. Accessing resources via 
+REST moves the client to new states. 
+
+REST is a design pattern, not a formal standard, which means it's a flexible guideline for designing
+web APIs, but not a strict technology or format.
+
+
+## Web Infrastructure
+
+Firewalls help with web security.
+Routers help with web scalability.
+Caches help with web efficiency. 
+
+
+
+
+
+## Case Study: Parts Web Store
+
+Let’s see what REST looks like in a real system.
+
+**Scenario:** Parts Depot, Inc. wants to design a web service that allows customers to:
+- **GET** a list of all parts.
+- **GET** detailed information about individual parts.
+- **POST** a purchase order (PO).
+
+### Approach
+
+In REST, each resource is identified by a URI (Uniform Resource Identifier). Clients interact with those resources using HTTP verbs, and the server responds with representations (like JSON or XML) that describe them.
+
+![RESTful Store Diagram](/restful-store.png)
+
+This means:
+- The client doesn’t need to know how the server stores parts, just the URL structure.
+- The same verbs (`GET`, `POST`, `PUT`, `DELETE`) apply to every resource.
+
+### Representation
+
+A client would retrieve the parts list by sending a **GET** request to: `http://www.parts-depot.com/parts`
+
+The server responds with a representation (in this case, XML) describing the `/parts` resource.  
+This follows the REST principle:
+
+> Create a resource for every service, and identify each resource using a URI.
+
+### Networked Information
+
+The data returned by the `/parts` endpoint might look like this:
+
+```xml
+<?xml version="1.0"?>
+<Parts>
+ <Part id="00345" href="http://www.parts-depot.com/parts/00345"/>
+ <Part id="00346" href="http://www.parts-depot.com/parts/00346"/>
+ <Part id="00347" href="http://www.parts-depot.com/parts/00347"/>
+ <Part id="00348" href="http://www.parts-depot.com/parts/00348"/>
+</Parts>
+```
+
+Notice that each `<Part>` element links to another resource.
+When a client follows one of those links — for example:
+
+```
+GET http://www.parts-depot.com/parts/00345
+```
+
+—it receives a new representation describing that individual part, which may itself contain links to related resources (like a specification or pricing information).
+
+This demonstrates another REST principle:
+
+> Data returned by a service should link to other data.
+> Each response should act as a “map” of the system, letting the client discover related resources through hyperlinks, just like how users navigate a website.
+
+---
+
+## Idempotency
+
+An operation is idempotent if performing it multiple times has the same effect as performing it once.  
+
+In REST, this property ensures that repeating a request leads to the same response and state.
+
+Idempotency is essential for **reliability**, as network failures, retries, or concurrent clients can cause duplicate requests.   Clients, load balancers, and proxies are allowed to safely resend requests without issue.
+
+Rules of thumb:
+- `GET` is safe: it reads, but does not write or modify resources.  
+- `PUT` and `DELETE` are idempotent: repeated calls have the same effect.  
+- `POST` is *not* idempotent: multiple identical posts can create duplicates and must be handled carefully.
+
+---
+
+## Statelessness
+
+Another core principle of REST is that:
+
+> Each request contains all the information needed to service the request.
+
+This is because server does not store client state. In other words, every interaction between a client and server is independent and self-contained.
+
+This design keeps RESTful systems scalable and highly available:
+- Any server can handle any request
+- Servers can be easily replaced or replicated to meet demand
+- Failures are isolated
+
+<details>
+  <summary>However, statelessness can come with tradeoffs.  </summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Without a state, the client will need to send extra data or make multiple requests for certain workflows.</p>
+  </div>
+</details>
+
+--- 
+
+## Physical vs. Logical URIs
+
+Going back to the Parts Depot: if the store sells a million parts, should there be a million static pages?
+
+```
+http://www.parts-depot.com/parts/000001
+http://www.parts-depot.com/parts/000002
+...
+http://www.parts-depot.com/parts/999999
+```
+
+In a RESTful system, these URLs are logical, not physical.  
+
+Instead of pointing to static HTML files, they identify resources that the server dynamically generates.  
+When a client requests `/parts/00345`, the server looks up the part in a database and returns a representation (e.g., XML or JSON), that can then be passed to a Jinja template.
+
+This design keeps clients **loosely coupled** from implementation details. The resource’s location, format, etc. can change, but the URI stays the same. Clients asks without thinking.
+
+## Credits
+
+<Cards>
+  <Card title="Gregory Gay's Lecture on API Design" href="https://greg4cr.github.io/courses/fall21tda594/Lectures/Fall-21-Lecture9-APIs.pdf" />
+</Cards>
+

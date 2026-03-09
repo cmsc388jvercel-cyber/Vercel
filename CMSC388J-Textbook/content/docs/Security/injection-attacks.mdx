@@ -1,0 +1,48 @@
+---
+title: Injection Attacks
+description: Avoiding the Doctor's Office
+---
+
+## Injection Attacks
+
+An attack where an attacker slips malicious code into your app within user input. Apps need to properly check or sanitize that input to ensure code doesn't get executed.
+
+### XSS (Cross-Site Scripting)
+
+Attacker gets the victim’s browser to run a malicious script.
+
+- **Stored XSS**: attacker saves the script on the site's server, in a file accessed by users (e.g. in comments)
+- **Reflected XSS**: trick a victim into clicking an evil link that has the script; a type of phishing attack
+- **DOM-based XSS**
+
+<details>
+  <summary>For Review: How is Reflected XSS different from CSRF?</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Reflected XSS isn't based around cookies, and focuses on a fraudulent script rather than a legitimate action. Both are phishing attacks, though.</p>
+  </div>
+</details>
+
+### SQL Injections
+
+Attacker injects SQL query into a form, using the query to bypass authentication or access data.  
+
+Consider this naive query:
+
+```sql
+SELECT * FROM users 
+WHERE username = '$username' AND password = '$password';
+```
+
+Without input sanitation, we can enter `' or 1=1--` into the field, which gets us this:
+```sql
+SELECT * FROM users 
+WHERE username = '' or 1=1-- ' AND password = '$password';
+```
+
+## Injection Defense
+
+- Sanitize inputs on the browser and server
+- Don’t build code/queries from raw input; use parameterized and typed queries  
+- Design user roles to give least amount of privilege necessary for users
+- Log & monitor suspicious inputs (rate/shape anomalies) and fail closed.
+- Use HTTP security headers such as CSP (Content Security Policy)

@@ -1,0 +1,32 @@
+{% macro nav(url0, url1, url2, url3) %}
+<!-- style="view-transition-name: navbar" -->
+<nav class="group shadow-2xl">
+  <a href="https://drive.google.com/drive/folders/1pv88FzWMeuUseOkUsvHoTt98kbX8Szfw?usp=sharing" target="_blank" class="group/drive sm:border border-gray-500/30 rounded-full sm:backdrop-blur-sm sm:bg-gray-100/60 hover:!bg-white dark:hover:!bg-[rgb(107_114_128_/_0.3)] sm:dark:bg-gray-600/60 flex justify-center items-center nav-link opacity-50 hover:translate-x-0.5 group-hover:opacity-100 duration-500 py-1 px-2 hover:border-gray-300/30 hover:scale-105 active:scale-90 active:duration-75">
+  <!-- hover:bg-gradient-to-r from-red-500/30 via-yellow-500/30 to-emerald-500/30 -->
+  <div class="relative">
+  <span class="group-hover/drive:opacity-0 duration-300">
+  {% include "icons/drive.html" %}
+  </span>
+  <span class="group-hover/drive:opacity-100 opacity-0 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 duration-300">
+      {% include "icons/drivecolor.html" %}
+    </span>
+  </div>
+  <span class="w-0 px-0 pointer-events-none group-hover/drive:w-14 opacity-0 group-hover/drive:opacity-100 group-hover/drive:px-2 hidden sm:inline duration-300 text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-amber-400 to-green-500 dark:from-red-300 dark:via-yellow-300 dark:to-emerald-300 select-none">Slides</span>
+  </a>
+  <div class="grid grid-cols-3 sm:flex justify-between items-center w-full sm:w-auto sm:gap-1 rounded-full">
+    <a class="nav-link duration-300 sm:px-3 sm:py-0.5 sm:hover:ring-1 ring-gray-500/60" href="{{ url1 }}">
+      Schedule
+    </a>
+    <a class="nav-link duration-300 sm:px-3 sm:py-0.5 sm:hover:ring-1 ring-gray-500/60" href="{{ url2 }}">
+      Office Hours
+    </a>
+    <a class="nav-link duration-300 sm:px-3 sm:py-0.5 sm:hover:ring-1 ring-gray-500/60" href="{{ url3 }}">
+      Projects
+    </a>
+  </div>
+  <a href="https://github.com/CMSC388J-UMD-Fall2025/388jfall2025" target="_blank"
+    class="sm:border border-gray-500/30 rounded-full sm:backdrop-blur-sm sm:bg-gray-100/60 sm:dark:bg-gray-600/60 grid place-items-center aspect-square hover:scale-105 active:scale-90 active:duration-75 nav-link opacity-50 group-hover:opacity-100 duration-500 p-2">
+    {% include "icons/github.html" %}
+  </a>
+</nav>
+{% endmacro %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+<h1
+  class="text-xl mb-6 text-center font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
+>
+  Poke-Info website!
+</h1>
+<div class="flex flex-col gap-1 sm:min-w-96">
+  <!-- searchbar -->
+  <input
+    id="search"
+    class="p-2 rounded-full mb-2 text-center border-2 border-neutral-700/70 bg-neutral-800/80 backdrop-blur-sm text-white sticky top-2 z-50"
+    type="text"
+    placeholder="Search for a pokemon"
+  />
+
+  {% for pokemon, pokemonid in pokemon_list|zip(poke_ids) %}
+  <a
+    href="{{url_for('pokemon_info', pokemon_name=pokemon)}}"
+    class="flex gap-6 p-1 items-center bg-neutral-700 hover:bg-neutral-600 hover:scale-105 duration-300 rounded-2xl font-semibold capitalize shadow-2xl active:duration-75 active:scale-95 active:bg-neutral-500"
+  >
+    <img
+      class="bg-neutral-800 rounded-xl"
+      src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{pokemonid}}.png"
+    />
+    {{ pokemon }}
+  </a>
+  {% endfor %}
+</div>
+
+<script>
+  const search = document.getElementById("search");
+  const links = document.querySelectorAll("a");
+
+  search.addEventListener("input", (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    links.forEach((link) => {
+      if (link.textContent.toLowerCase().includes(searchValue)) {
+        link.style.display = "flex";
+      } else {
+        link.style.display = "none";
+      }
+    });
+  });
+</script>
+
+{% endblock %}
+

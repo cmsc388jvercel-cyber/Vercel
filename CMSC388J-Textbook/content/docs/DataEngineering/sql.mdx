@@ -1,0 +1,175 @@
+---
+title: Relational Databases
+description: This is unrelated but...
+---
+
+## Keys
+
+Let’s say you're working as an intern at your local library and are in a situation where you have a table of books 
+and you want to give each book a unique way to identify it. 
+
+You might first think that title could work, but if two books have the same title or the titles change, 
+it can lead to confusion or errors about which book is which.
+
+The concept of keys tackles this by introducing a **primary key**—a unique, never-changing identifier for each record 
+(e.g an ISBN or an auto-incremented ID number). This field/column is guaranteed to be unique for every row. 
+
+Now lets say you wanted to keep track of the ratings for each book. Having a new column for each book including all the redundant
+information about the book just for a single rating can be a waste of data - so you have a separate table for ratings. 
+How would you know which book the rating is pertaining to? You'd reference the primary key in of the book in the separate 
+ratings table. In the ratings table, the column would be called the **foreign key**. It allows you to organize your data 
+so every item can be referenced precisely and related to other tables without mix-ups, ensuring data integrity and 
+enabling complex relationships between tables (like authors to books, ratings to books, etc.).
+
+![Book Ratings](/books_ratings.jpg)
+
+--> Having a field that is a unique identifier allows to you accurately identify/diffrentiate items in your data.
+
+## JOIN
+
+We've gone over how having separate tables can reduce redundancy. 
+
+Let’s say you have to keep your information about sea lions and their migration in separate tables 
+(one for sea lions, one for migrations), but you want to see each sea lion alongside their migration data.
+However, you cannot just view all the info in one go because the data is in different places, so you’d have to 
+manually coordinate and match the rows—which is prone to mistakes and inefficiency.
+
+The **JOIN** concept tackles this by allowing you to create a query that combines rows from multiple tables 
+based on common columns (usually a shared ID or key). With JOIN, you specify how to link the related tables in SQL.
+It allows you to see all the relevant connected information together (e.g., all sea lion details and their respective 
+migration data in one table), enabling richer analysis and answering complex questions easily.
+
+
+
+To join the tables:
+```sql
+SELECT *
+FROM "sea_lions"
+JOIN "migrations" ON "migrations"."id" = "sea_lions"."id";
+```
+
+--> Allows you to separate various information to avoid redundancy but also use information from separate places together. 
+
+## Grouping
+
+Let’s say you have a table of ratings for books, and you want to know the average rating per book. 
+You can't just calculate the average by looking at all ratings together—because you need to group 
+ratings by book to get meaningful results (otherwise you get only the overall average).
+
+The **GROUP BY** concept in SQL tackles this by allowing you to partition your data into groups based on shared values 
+in a column and then apply functions that aggregate (e.g. *AVG*, *COUNT*, *SUM*) to each group independently. 
+
+It allows you to get results like the average rating for each book, the number of ratings per book, and you can even filter 
+or sort these groups (with HAVING and ORDER BY), making your data summaries precise and valuable.
+
+```sql
+SELECT "book_id", AVG("rating") AS "average rating"
+FROM "ratings"
+GROUP BY "book_id";
+```
+
+--> Allows for applying aggregation functions on rows with same value in column.
+
+## Concurrency
+
+How can we handle simultaneous handling of multiple functions by the database? 
+
+Consider a simple bank database that would have to do this:
+
+![Bank Database](/concurrency.jpg)
+
+Banks have to handle accounts sending money to one another. Here, Alice is trying to send $10 to Bob. This is an example of a multi-part transaction:
+
+1. We need to add $10 to Bob's account.
+2. We need to subtract $10 to Alice's account.
+
+And we must do this at once, as otherwise, users may have an incorrect understanding of the bank's total cash.
+
+--- 
+
+### Transactions and ACID
+
+A **transaction** is a group of operations that should be treated as one operation.
+
+Transactions are said to have the following properties, commonly known as **ACID**:
+- **Atomicity** - "cannot be broken down into smaller pieces"
+- **Consistency** - "should not violate any database constraint"
+- **Isolation** - "if multiple users access a database, their transactions cannot interfere with one another"
+- **Durability** - "in case of any failure within the database, data changed by transactions remain"
+
+These guarantees are not as well kept by NoSQL databases, giving SQL an edge in critical use cases. ETL pipelines (come to Javid's lecture!) usually extract from NoSQL sources and load into SQL targets. 
+
+---
+
+### A Transaction in Flask
+
+With that in mind, let's implement a transaction in our favorite framework! 
+
+First, let's create a route that simply returns all IDs in our database, to find Alice and Bob:
+
+```python
+@app.route("/accounts")
+def accounts():
+    db = get_db()
+    rows = db.execute('SELECT id, name, balance FROM accounts;').fetchall()
+    return jsonify([dict(r) for r in rows])
+```
+
+This will return:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "balance": 20
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "balance": 30
+  }
+]
+```
+
+And now let's create a route that transfers an amount from person `1` to person `2`:
+
+```python
+@app.route("/transfer/<amount>", methods=["POST"])
+def transfer(amount):
+    db = get_db()
+
+    try:
+        db.execute("BEGIN")
+        db.execute('UPDATE accounts SET balance = balance + ? WHERE id = 2;', (amount,))
+        db.execute('UPDATE accounts SET balance = balance - ? WHERE id = 1;', (amount,))
+        db.commit()
+        return jsonify({"ok": True, "amount": amount}), 201
+    except Exception as e:
+        db.rollback()
+        return jsonify({"ok": False, "error": str(e)}), 400
+```
+
+You'll notice that a transaction starts with `BEGIN`, and is ran all at once until either one of two things happen:
+
+- The transaction is **commited** because it was successful. This keeps **atomicity**.
+- The transaction is **rolled back** because it was unsuccessful. The keeps **consistency** and **durability**.
+
+---
+
+### Race Conditions
+
+Roughly the same thing it meant in CMSC216: multiple threads or processes compete to change the same value. With bank databases, malicious attackers may want to exploit inconsistencies to rob the bank.
+
+Transactions are processed in **sequentially** to avoid this. This keeps **isolation**.
+
+Databases such as SQLite implement this with **locks**. A database table can be in a few states:
+
+- **Unlocked** - No user is accessing the table. 
+- **Shared Lock** - One or more transactions are reading the table, but none may write to it. 
+- **Exclusive Lock** - A transaction is writing to the table, and no others may read or write to it. 
+
+<Cards>
+  <Card title="CS50 Introduction to Databases with SQL - Relating" href="https://cs50.harvard.edu/sql/notes/1/" />
+  <Card title="CS50 Introduction to Databases with SQL - Optimizing" href="https://cs50.harvard.edu/sql/notes/5/" />
+</Cards>

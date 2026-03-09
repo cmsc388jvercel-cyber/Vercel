@@ -1,0 +1,4 @@
+{
+    "title": "🧪 Flask + MongoDB",
+    "pages": ["intro-to-flask", "forms", "mongodb-primer", "user-management", "blueprints-factories", "flash-upload"]
+}

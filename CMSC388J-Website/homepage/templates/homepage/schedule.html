@@ -1,0 +1,73 @@
+<h2 id="schedule">Schedule</h2>
+<table class="my-0 rounded-xl overflow-hidden">
+  <thead>
+    <tr class="even:bg-gray-200 odd:bg-gray-100 dark:even:bg-gray-600 dark:odd:bg-gray-700">
+      <th class="pl-3">Week</th>
+      <th class="py-2">Date</th>
+      <th class="py-2">Topic</th>
+      <th class="py-2">Assignment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% from 'homepage/scheduleMacro.html' import weekM %}
+
+    {{ weekM(1, '9/4', 'Intro to Python', ['P1 Assigned'], ['https://classroom.github.com/a/FUZj7oGr']) }}
+    {{ weekM(2, '9/11', 'Intro to Flask') }}
+    {{ weekM(3, '9/18', 'Forms', ['P1 Due', 'P2 Assigned'], ['TBA', 'https://classroom.github.com/a/6ZWiSsql']) }}
+    {{ weekM(4, '9/25', 'MongoDB Setup (interactive)', ['P2 Due'], ['https://www.gradescope.com/courses/1117091/assignments/6669749/']) }}
+    {{ weekM(5, '10/2', 'User/State Management', ['P3 Assigned'], ['https://classroom.github.com/a/7ruFIcxo']) }}
+    {{ weekM(6, '10/9', 'Fall Break 🎉') }}
+    {{ weekM(7, '10/16', 'Files, Blueprints, Errors', ['P3 Due'], ['https://www.gradescope.com/courses/1117091/assignments/6669746/']) }}
+    {{ weekM(8, '10/23', 'HTTP and REST APIs', ['P4 Assigned'], ['https://classroom.github.com/a/gOoVgUCZ']) }}
+    {{ weekM(9, '10/30', 'Large-Scale Web Applications') }}
+    {{ weekM(10, '11/6', 'Proxies and Caching', ['P4 Due'], ['https://www.gradescope.com/courses/1117091/assignments/6669740/']) }}
+    {{ weekM(11, '11/13', 'Relational Databases', ['Proposal Assigned'], ['https://github.com/CMSC388J-UMD-Fall2025/388jfall2025/blob/master/projects/final.md']) }}
+    {{ weekM(12, '11/20', 'ETL Pipelines (Microsoft SWE Guest Lecture)', ['Proposal Due'], ['https://www.gradescope.com/courses/1117091/assignments/6669752/submissions']) }}
+    {{ weekM(13, '11/27', 'Thanksgiving break 🎉') }}
+    {{ weekM(14, '12/4', 'OH') }}
+    {{ weekM(15, '12/11', 'OH') }}
+
+    <!-- CSS & Tailwind -->
+    <!-- <tr class="even:bg-gray-200 odd:bg-gray-100 dark:even:bg-gray-600 dark:odd:bg-gray-700">
+      <td class="pl-3 pb-2">7</td>
+      <td class="pb-2">03/08</td>
+      <td style="vertical-align: middle;">
+        <span class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank"
+            class="w-fit bg-[#55b2f688] dark:bg-[#1572B688] hover:bg-[#55b2f6] dark:hover:bg-[#1572B6] duration-300 h-6 flex items-center rounded-full gap-1 pl-2.5 pr-3 no-underline sm:hover:ring-1 ring-black dark:ring-white active:duration-75 active:translate-y-0.5 hover:shadow-md active:shadow-none">
+            {% include "icons/css.html" %}
+            CSS
+          </a>
+          <a href="https://tailwindcss.com/" target="_blank"
+            class="w-fit bg-[#26D6F488] dark:bg-[#06B6D488] hover:bg-[#26D6F4] dark:hover:bg-[#1090a8]  duration-300 h-6 flex items-center rounded-full gap-1 pl-2 pr-3 no-underline sm:hover:ring-1 ring-black dark:ring-white active:duration-75 active:translate-y-0.5 hover:shadow-md dark:hover:shadow-[0_0.5rem_1rem_-0.25rem_#fff4,inset_0_0_1rem_-0.25rem_#fff4] active:shadow-none">
+            {% include "icons/tailwind.html" %}
+            Tailwind
+          </a>
+        </span>
+      </td>
+      <td class="pb-2"></td>
+    </tr> -->
+ 
+    <!-- Svelte & React -->
+    <!-- <tr class="even:bg-gray-200 odd:bg-gray-100 dark:even:bg-gray-600 dark:odd:bg-gray-700">
+      <td class="pl-3">14</td>
+      <td>04/26</td>
+      <td style="vertical-align: middle;">
+        <span class="flex flex-col sm:flex-row sm:items-center gap-2">
+          APIs,
+          <a href="https://svelte.dev/" target="_blank" class="w-fit text-white bg-gradient-to-br from-[#FF3E00] to-[#f96844] duration-300 h-6 flex items-center rounded-full gap-1 pl-2.5 pr-3 no-underline active:duration-75 active:translate-y-0.5 active:translate-x-0.5 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[0.25rem_0.25rem_0rem_0rem_#ff9874] active:shadow-none">
+            {% include "icons/svelte.html" %}
+            Svelte
+          </a>
+          <a href="https://react.dev/" target="_blank" class="w-fit text-white bg-gradient-to-br from-[#61DAFB] to-[#41BADB] duration-300 h-6 flex items-center rounded-full gap-1 pl-2.5 pr-3 no-underline active:duration-75 active:translate-y-0.5 active:translate-x-0.5 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[0.25rem_0.25rem_0rem_0rem_#81FAFB] active:shadow-none">
+            {% include "icons/react.html" %}
+            React
+          </a>
+        </span>
+      </td>
+      <td>
+      </td>
+    </tr>
+  -->
+  </tbody>
+</table>

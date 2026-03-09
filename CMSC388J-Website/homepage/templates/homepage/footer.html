@@ -1,0 +1,58 @@
+<footer class="relative flex flex-col gap-1 justify-center text-center items-center pt-12 pb-14">
+  <div id="background-elements" class="hidden sm:block">
+    <div class="absolute translate-y-8 translate-x-8 duration-[1.2s] text-2xl top-24 left-12 scale-[2] -rotate-45 blur-sm opacity-0">🍿</div>
+    <div class="absolute translate-y-16 translate-x-16 duration-[1.1s] text-2xl top-12 left-24 scale-150 -rotate-[30deg] blur-[1px] blur-sm opacity-0">🍿</div>
+    <div class="absolute translate-y-32 translate-x-16 duration-[1s] text-2xl top-8 left-36 -rotate-12 blur-[2px] blur-sm opacity-0">🍿</div>
+    <div class="absolute translate-y-32 -translate-x-16 duration-[1s] text-2xl top-8 right-36 rotate-12 blur-[2px] blur-sm opacity-0">🍿</div>
+    <div class="absolute translate-y-16 -translate-x-16 duration-[1.1s] text-2xl top-12 right-24 scale-150 rotate-[30deg] blur-[1px] blur-sm opacity-0">🍿</div>
+    <div class="absolute translate-y-8 -translate-x-8 duration-[1.2s] text-2xl top-24 right-12 scale-[2] rotate-45 blur-sm opacity-0">🍿</div>
+  </div>
+  <div id="line1" class="duration-1000 translate-y-2 opacity-0">◡̈ Thanks for reading the syllabus! 🎉</div>
+  <div id="line2" class="duration-1000 translate-y-2 opacity-0">Type <button id="fireworks" class="relative group duration-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg w-8 h-8 text-lg active:duration-75 active:bg-gray-400 dark:active:bg-gray-500"><div class="group-active:scale-[2] group-hover:scale-[0.9] duration-300 group-active:duration-75">🍿</div></button> in the chat for <b class="text-emerald-500 bg-emerald-500/20 rounded-lg p-1">0.5%</b> extra credit</div>
+</footer>
+<script>
+  const backgroundElements = document.querySelector('#background-elements');
+  const footer = document.querySelector('footer');
+  const line1 = document.querySelector('#line1');
+  const line2 = document.querySelector('#line2');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        line1.classList.remove('opacity-0', 'translate-y-2');
+        setTimeout(() => {
+          line2.classList.remove('opacity-0', 'translate-y-2');
+        }, 500);
+
+        for(const element of backgroundElements.children) {
+          element.classList.remove('blur-sm', 'opacity-0');
+          element.classList.add('!translate-x-0', '!translate-y-0');
+        }
+       
+        observer.unobserve(footer);
+      }
+    });
+  });
+  setTimeout(() => {
+    observer.observe(footer);
+  }, 1000);
+  const fireworks = document.querySelector('#fireworks');
+  fireworks.addEventListener('click', () => {
+    navigator.clipboard.writeText('🍿');
+    const firework = document.createElement('div');
+    const emojis = ['🍿', '💥', '🔥', '😹', '🥵', '🥶', '🤘', '🚀', '🗿']
+    firework.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+    const x = Math.floor(Math.random() * 100) - 50;
+    firework.classList.add('absolute', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', 'text-4xl', 'duration-[3s]', 'select-none', 'pointer-events-none');
+    fireworks.appendChild(firework);
+    setTimeout(() => {
+      firework.style.translate = `${x}vw 0`;
+      firework.classList.add('-translate-y-[100vh]', 'opacity-0', `rotate-[${7.2 * x}deg]`, 'scale-[5]');
+    }, 0);
+    setTimeout(() => {
+      firework.classList.add('blur-md')
+    }, 1000);
+    setTimeout(() => {
+      firework.remove();
+    }, 5000);
+  });
+</script>

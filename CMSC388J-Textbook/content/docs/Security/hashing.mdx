@@ -1,0 +1,136 @@
+---
+title: Hashing
+description: Making a Hash Brown
+---
+
+## Hashing
+
+A **one-way function** that takes a string input and outputs a string of `X` length.
+
+![Comic about Hashing](/xkcd936.png)
+
+(Source: [https://xkcd.com/936/](https://xkcd.com/936/))
+
+- Problem: sha256 can calculate billions of hashes quickly. Solution: use a slow hash like BCrypt.
+- Problem: People reuse or share common passwords. Solution: use salting to add another string.
+
+
+### Fast Hashes
+
+Takes a short time to hash, is portable, doesn't lead to collisions. Commonly used for data integrity. However:
+
+- **Rainbow Tables** exist: precomputed and compressed tables from hash -> passwords
+- **Seclists** exist: lists of commonly used keys, e.g. passwords, usernames, etc.
+
+<Cards>
+  <Card title="Password Seclist" href="https://github.com/danielmiessler/SecLists/tree/master/Passwords" />
+</Cards>
+
+With this information, we can create lists of all commonly used passwords and their variants within seconds. 
+
+<details>
+  <summary>Review Question: What is a hash collision? (Hint: the answer is the same as for hash tables.)</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>A collision is when two inputs lead to the same generated hash. In hash tables, we typically handle this by generating a linked list for a given hash table cell.</p>
+  </div>
+</details>
+
+### Slow Hashes
+
+Takes longer to hash, and significantly longer to test all combinations.
+
+<details>
+  <summary>Why are we saying "test" instead of "break"?</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>Hashes are not "broken," as they are designed to be one-way functions that cannot be reversed. Instead, we must brute-force all possibilities.</p>
+  </div>
+</details>
+
+--- 
+
+## BCrypt
+
+BCrypt is a slow hash. Process:
+
+1. Ask for a cost parameter
+2. Ask for a password
+3. Generate a random salt
+4. Generate key (`2^cost` key expansion rounds)
+5. Prepend version number, cost, salt, and hashed password
+
+<details>
+  <summary>BCrypt Disclaimer</summary>
+  <div style={{ marginLeft: "20px" }}>
+    <p>BCrypt only handles up to 72 bytes, limiting password length. We can use hash and compress the password to handle this prior. For example: convert password to SHA256 -> convert to base64 -> pass to BCrypt.</p>
+  </div>
+</details>
+
+### Example Output
+
+```$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy```
+
+- `2a` is the version number
+- `10` is the cost
+- `N9qo8uLOickgx2ZMRZoMye` is the salt
+- The rest of the string is the hashed password  
+
+---
+
+## BCrypt in Flask
+
+Install with `pip3 install flask-bcrypt` and import `BCrypt` class:
+
+```python
+from flask import Flask
+from flask_bcrypt import BCrypt
+
+app = Flask(__name__)
+bcrypt = BCrypt(app)
+``` 
+
+### Generating Hashes
+
+Create a hash with `generate_password_hash()` and `decode()`:
+
+```python
+hash = bcrypt.generate_password_hash("a_password")
+# This creates a byte string with version 2b and cost 12:
+# b'$2b$12$nz0fVuySYJBzJ.sXocYsuuHfUw5weyLCzOEJHjjLwvf1u/hChnam2'
+
+hash.decode()
+# This converts the byte string into a normal string:
+# '$2b$12$nz0fVuySYJBzJ.sXocYsuuHfUw5weyLCzOEJHjjLwvf1u/hChnam2'
+```
+
+We can rerun our code a few times to see that BCrypt hashes the password differntly on each call:
+
+```python
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$nz0fVuySYJBzJ.sXocYsuuHfUw5weyLCzOEJHjjLwvf1u/hChnam2'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$TPu20eIGwAl050BcZfd60uFDNpiiob3CYr9lKSuAPCJ0k/MuXML1e'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$Q0c.ZCab7QqPjQ3znxXqK.1xtuUYUhhMhy0GYj8I1r14823D/ZupK'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$HfAZT2hsoY4frIl2R6qDn.HAs6A2VUyplkQs6O9D3ont2t9dS9bEe'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$eIQ8MELmSkZW5kmF1MG/5uz8ufit6KrFXwRGStIM1FkUUxVbFIbMO'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$vGWOxXd/Ee00ubeglwxy7eSY7ryMyGm/1k9MDejvixYkixcChLqe2'
+>>> bcrypt.generate_password_hash('a_password').decode()
+'$2b$12$9AnFKXs66A86ZQUknV4/m.w7zCZB3rLpfZgT7vJnLAQ7D/sl12wHa'
+```
+
+### Checking Hashes
+
+Compare a generated hash to an input password:
+
+```python
+>>> pass_hash = bcrypt.generate_password_hash('a_password')
+>>> pass_hash
+b'$2b$12$exCUucO2pcFhvahPR/mDNeM7CJhuoj7cMJ4s1CxHZdzHApsQqbwYq'
+>>> bcrypt.check_password_hash(pass_hash, 'a_password')
+True
+>>> bcrypt.check_password_hash(hash, 'another_password')
+False
+```

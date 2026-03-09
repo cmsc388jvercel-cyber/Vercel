@@ -1,0 +1,70 @@
+---
+title: CSRF
+description: Be scared of getting redirected!
+---
+
+## Cross-Site Request Forgery
+
+### CSRF Attacks
+
+Not everyone is a good person (shocker). 
+
+You are logged into your bank’s website in one browser tab. In another tab, you visit a site with a hidden form that tries to 
+transfer money from your account. How could this happen without your knowledge?
+
+![CSRF Attack Image](/csrf-attack.webp)
+
+When you logged in, the browser automatically includes a session cookie (information stored in your 
+browser's memory temporarily such as IP address). With every request to this site, your browser includes 
+the information in this session cookie (regardless of which website it is). This means a malicious site can 
+trick your browser into sending a request you didn't send, but the broswer wouldn't be able to tell the difference. 
+
+This type of attack is called a Cross-Site Request Forgery (CSRF) attack. Luckily, there is a solution. Websites can use CSRF tokens - 
+unique and unpredictable values included in each form. The server checks for this token before processing a request. If it's incorrect, 
+the request will not be processed.  The token is generated (securly ofc) by the server and not shared with external sites, 
+so an attacker from a different malicious site cannot know in advance. 
+- The token is random and long enough that guessing it would cost excessive time and computing power
+- The token is usually regenerated after each session, so even if it is eventually guessed, it wouldn't be for too long. 
+
+
+### CSRF Tokens in Flask
+
+Set a secret key (for requiring session management and CSRF token regeneration): 
+```python
+import os
+from flask import Flask, render_template, request
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(16)
+```
+
+Create form class:
+```python
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import InputRequired
+
+class SimpleForm(FlaskForm):
+    name = StringField('Name', validators=[InputRequired()])
+    submit = SubmitField('Submit')
+```
+
+Use the Form in Your View
+```python
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = SimpleForm()
+    if form.validate_on_submit():
+        # process form data
+        return 'Form submitted!'
+    return render_template('form.html', form=form)
+```
+
+Render the CSRF Token in Your Template:
+
+```html
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name(size=40) }}<br>
+    {{ form.submit() }}
+</form>
+```

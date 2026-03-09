@@ -1,0 +1,155 @@
+---
+title: Blueprints and Factories
+description: Convincing your parents you study real engineering!
+---
+
+## Blueprints
+
+Allow us to organize our app into distinct modules. 
+- Functional Structure - organize files based on function
+- Divisional Structure - organize files based on their section
+
+### Blueprint File Structure
+
+Each blueprint is a separate Python package, i.e. a directory with a `__init__.py`. For example:
+
+```
+flask_app
+    main/
+        __init__.py
+        routes.py
+        ...
+    templates/
+    users/
+        __init__.py
+        routes.py
+        ...
+    __init__.py
+    models/
+```
+
+Notice that `flaskapp` has no `routes.py` anymore.
+
+<details>
+  <summary>Is this an example of functional or divisional structure?</summary>
+  <p>This app is organized into its `main` and `users` functionality. You can choose either structure, though.</p>
+</details>
+
+### Routing Blueprints
+
+In each package's `routes.py` file, instantiate a Blueprint and register routes to that blueprint...
+
+```python
+from flask import Blueprint
+
+users_blueprint = Blueprint('users', __name__)
+
+@users_blueprint.route('/register', methods=["GET","POST])
+def register_route():
+    ``` omitted code ```
+
+@users_blueprint.route('/login', methods=["GET","POST])
+def login_route():
+    ``` omitted code ```
+
+@users_blueprint.route('/logout')
+def logout_route():
+    ``` omitted code ```
+```
+
+Now, in under `flaskapp/__init__.py`, "register" each blueprint to the larger app...
+
+```python
+from flask import Flask
+
+from .main.routes import main_blueprint
+from .users.routes import users_blueprint 
+
+app = Flask(__name__)
+
+# register blueprints, add prefixes to organize URLs
+app.register_blueprint(users_blueprint, url_prefix="/users")
+app.register_blueprint(main_blueprint)
+```
+
+More details: 
+- To identify URLs for views within blueprints: `url_for('users.login')`
+- To specify separate static and template folders:  `users = Blueprint('users', __name__, static_folder='static', template_folder='templates')`
+
+### Debugging
+
+We can use the `url_map` to see all of our routes:
+```python
+>>> from flask_app import app
+>>> 
+>>> app.url_map
+Map([<Rule '/users/register' (POST, GET, HEAD, OPTIONS) -> users.register>,
+ <Rule '/users/account' (POST, GET, HEAD, OPTIONS) -> users.account>,
+ <Rule '/users/logout' (GET, HEAD, OPTIONS) -> users.logout>,
+ <Rule '/users/login' (POST, GET, HEAD, OPTIONS) -> users.login>,
+ <Rule '/about' (GET, HEAD, OPTIONS) -> main.about>,
+ <Rule '/' (GET, HEAD, OPTIONS) -> main.index>,
+ <Rule '/static/<filename>' (GET, HEAD, OPTIONS) -> static>,
+<Rule '/user/<username>' (GET, HEAD, OPTIONS) -> main.user_detail>])
+```
+
+## Application Factories
+
+We have been initializing our app like this:
+
+```python
+from app import create_app
+app = create_app()
+```
+
+This creates a global app object. This is fine, but it doesn't allow us to:
+- Create multiple app instances (e.g. testing vs. production)
+- Perform lazy initialization of extensiions (e.g. MongoDB)
+
+Thus: App Factories.
+
+### Example Factory
+
+```python
+db = MongoEngine()
+
+def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_pyfile(config_filename)
+
+    # initialize db
+    db.init_app(app)
+
+    app.register_blueprint(<blueprint_name>)
+    app.register_error_handler(404, page_not_found)
+
+    return app
+```
+
+### Lazy Initialization
+
+Defer object creation unntil you actually need it.
+
+```python
+# previously...
+db = MongoEngine(app)
+
+# with Factories...
+db = MongoEngine()
+
+def create_app():
+    ...
+    db.init_app(app)
+    ...
+```
+
+Flask extensions typically support this API for lazy initialization. 
+
+Now, we can make multiple apps without issues:
+
+```python
+app1 = create_app("development")
+app2 = create_app("testing")
+```
+
+This allows us to run different configurations, such as for running tests that use different databases.

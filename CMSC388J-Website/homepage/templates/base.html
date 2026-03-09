@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta property="og:title" content="CMSC 388J" />
+  <meta name="view-transition" content="same-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:image" content="{{ url_for('static', filename='og.png') }}" />
+  <meta property="og:description" content="Building Secure Web Applications (Fall 2024)" />
+  <link rel="icon" href="{{ url_for('static', filename='logo.svg') }}" type="image/svg+xml" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}" />
+  <title>CMSC 388J</title>
+</head>
+
+<body class="prose px-4 bg-white dark:bg-gray-800 mx-auto sm:px-0 dark:prose-invert">
+  <a href="/" class="mx-auto group flex justify-center w-fit">
+    <img src="../static/logo.svg" class="pointer-events-none select-none duration-300 group-hover:scale-105 group-active:duration-75 group-active:scale-95 ease-[cubic-bezier(0.175,0.885,0.32,1.5)]" alt="">
+  </a>
+  <h1 class="text-center text-balance text-2xl sm:text-4xl">
+    CMSC388<span class="duration-300 relative group hover:text-blue-400"><img
+        class="hidden sm:block select-none pointer-events-none opacity-0 min-w-96 h-96 shadow-xl border-2 border-white absolute top-0 left-1/2 z-50 translate-y-[12%] -translate-x-1/2 duration-300 group-hover:opacity-100 group-hover:translate-y-[10%] rounded-xl"
+        src="https://media1.tenor.com/m/HDmATFxHCmMAAAAC/cat-funny.gif" />J</span>: Building Secure Web Applications <br
+      class="sm:hidden" /> <span class="opacity-50">(Fall 2025)</span>
+  </h1>
+  {% block content %}{% endblock %}
+</body>
+
+</html>
